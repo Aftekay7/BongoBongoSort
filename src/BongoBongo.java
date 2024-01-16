@@ -53,7 +53,7 @@ public class BongoBongo {
 
 
 
-    /*
+    /**
         - min, max, value_count (or n/array_length) = meta information of the (sub-)list that has to be sorted
         - let A be a set:    For all x in A: 0 <= x - min <= max - min
         - function shifts value by the minimum so that key(max) = n-1 and key(min) = 0
@@ -82,7 +82,7 @@ public class BongoBongo {
 
         key = ((value_count - 1) * (value - min)) / value_range;
 
-        //edge case where values are too big -> overflow -> negative indices. Therefore we switch to long
+        //edge case where values are too big -> overflow -> negative indices. Therefore, we switch to long
         if (key < 0) {
             long buff = (long) (value_count - 1) * (long) (value - min);
             buff = buff / value_range;
@@ -95,7 +95,7 @@ public class BongoBongo {
 
 
 
-    /*
+    /**
         - recursive form of the sorting-algorithm
         - meta: provides meta-information of the stack that has to be sorted
         - insert_index: lowest free index of the (final) sorted array

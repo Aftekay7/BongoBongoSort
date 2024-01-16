@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Helpers {
 
 
@@ -112,5 +114,20 @@ public class Helpers {
 
         }
         return arr;
+    }
+
+    // Fisher-Yates shuffle algorithm for arrays
+    public static void shuffleArray(int[] array) {
+        int n = array.length;
+        Random random = new Random();
+
+        for (int i = n - 1; i > 0; i--) {
+            int index = random.nextInt(i + 1);
+
+            // Swap array[i] with the element at random index
+            int temp = array[i];
+            array[i] = array[index];
+            array[index] = temp;
+        }
     }
 }

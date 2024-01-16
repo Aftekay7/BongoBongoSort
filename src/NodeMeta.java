@@ -1,4 +1,4 @@
-/*
+/**
     - elements of the container-array.
     - stores the head and tail of the value-list
     - stores meta-information (max, min, count) of the value-stack
@@ -9,7 +9,7 @@ public class NodeMeta {
     private Node tail = null;       //maximum of the stack
 
 
-    /*
+    /**
         - inserts a value into the stack
         - stack has form of [minimum, (count - 2) unsorted values, maximum]
     */
@@ -22,14 +22,21 @@ public class NodeMeta {
 
             } else {
                 Node newNode = new Node(value);
+                int min = head.getValue();
+                int max = tail.getValue();
 
                 //value < minimum -> minimum = value
-                if(value < head.getValue()) {
+                if(value < min) {
                     newNode.setNext(head);
                     head = newNode;
 
-                   // value >= maximum -> maximum = value (>=, so order of values are not switched if equal. Its unimportant here, might be interesting while optimizing)
-                } else if (value >= tail.getValue()) {
+                   // value = min -> Only necessary if we copy the minima directly into the output array.
+                } else if (value == min) {
+                    newNode.setNext(head.getNext());
+                    head.setNext(newNode);
+
+                   // value >= maximum -> maximum = value (>=, so order of values are not switched if equal, so sorting remains stable.
+                } else if (value >= max) {
                     tail.setNext(newNode);
                     tail = newNode;
                     //value is inserted after the minimum

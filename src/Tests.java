@@ -4,25 +4,85 @@ import static java.util.Arrays.sort;
 
 public class Tests {
 
+    /**
+     * Tests sort-algorithm on specified array
+     *
+     * @param testarray specifies the testarray, if null random arrays are created
+     */
+    public static void compareOnArray(int[] testarray) {
+        int[] arr_1;
+        long avg_duration = 0;
+        long min = 1000000;
+        long max = 0;
+        long duration;
+        long startTime;
+        long endTime;
+        int count = 100;
 
-    /*
-        Tests sort-algorithm until a case is found where array is not sorted correctly or an exception is thrown.
-        Random array has: - a random length n: 1 <= n < max,
-                          - filled with random values x: 1 <= x < w,
-                          - where w is a random value with 1 <= w < max,
+        for (int i = 0; i < count; i++) {
+            arr_1 = testarray.clone();
 
-        If an Edge-Case is found, Exception, Input Array and output Array are printed.
+            startTime = System.nanoTime();
+            //sort(arr_1);
+            KraemerSort.sortArray(arr_1);
+            //ScalingSort.sort(arr_1);
+            endTime = System.nanoTime();
+            duration = endTime - startTime;
+
+
+            if (i == 0) {
+                //System.out.println(duration);
+                continue;
+            }
+
+
+            if (duration > max) {
+                max = duration;
+            } else if (duration < min) {
+                min = duration;
+            }
+
+
+            //System.out.println(duration);
+            avg_duration += duration;
+
+
+        }
+        avg_duration = avg_duration/(count - 1);
+
+
+        System.out.println("Best time : "+ min);
+        System.out.println("Average time: " + avg_duration);
+        System.out.println("Worst time: " + max);
+
+
+
+    }
+
+
+    /**
+     * Tests sort-algorithm until a case is found where array is not sorted correctly or an exception is thrown or
+     *
+     * @param max maximum of length and value range (see below)
+     *            Random array has: - a random length n: 1 <= n < max,
+     *            - filled with random values x: 1 <= x < w,
+     *            - where w is a random value with 1 <= w < max,
+     *            <p>
+     *            If an Edge-Case is found, Exception, Input Array and output Array are printed.
      */
     public static void test(int max) {
-        boolean running = true;
         //maximum value of the array length/max of range of values
         int length = RandomGenerator.random(1, max);
         int upper_value_bound = RandomGenerator.random(1, max);
         int lower_value_bound = RandomGenerator.random(0, upper_value_bound);
+        int[] arr;
+        int[] arr_copy;
 
+        boolean running = true;
         while (running) {
-            int[] arr = Helpers.RandArray(length, lower_value_bound, upper_value_bound);
-            int[] arr_copy = arr.clone();
+
+            arr = Helpers.RandArray(length, lower_value_bound, upper_value_bound);
+            arr_copy = arr.clone();
 
             try {
                 BongoBongo.sort(arr);
@@ -42,18 +102,18 @@ public class Tests {
     }
 
 
-
-    /*
-        Compares Speed of BongoBongo-Sort and Quicksort on the same Array for <testcases> cases.
-        Random array has: - a random length n = <length>, if <length> != 0 or
-                                            n: -1  <=  n  <  <max>, if <length> == 0
-                          - is filled with random values x: 1 <= x < w,
-                          - where w is a random value with: 1 <=  w  <  <max>,
-
-        Function returns an evaluation of the testcases (#wins, average time, average win time, slowest/fastest time)
-        for both sort-algorithms
+    /**
+     * Compares Speed of BongoBongo-Sort and Quicksort on the same Array for <testcases> cases.
+     * @param testarray specifies the test array, if null random arrays are created.
+     * Random array has: - a random length n = <length>, if <length> != 0 or
+     * n: -1  <=  n  <  <max>, if <length> == 0
+     * - is filled with random values x: 1 <= x < w,
+     * - where w is a random value with: 1 <=  w  <  <max>,
+     * <p>
+     * Function returns an evaluation of the testcases (#wins, average time, average win time, slowest/fastest time)
+     * for both sort-algorithms
      */
-    public static void compareSpeed(int length, int max, int testcases) {
+    public static void compareSpeed(int length, int max, int testcases, int[] testarray) {
         int bongo_win_count = 0;
         long bongo_avg_win_time = 0; //average win
         long bongo_duration;
@@ -86,21 +146,32 @@ public class Tests {
         while (n > 0) {
 
             //generating random values
-            if (length == 0) {
+            if (length == 0 && testarray == null) {
                 length = RandomGenerator.random(1, max);
             }
 
-            upper_value_bound = RandomGenerator.random(1, max);
-            lower_value_bound = RandomGenerator.random(0, upper_value_bound);
+            int[] arr_1;
+            int[] arr_2;
+            int[] arr_temp;
 
-            //generate random array using the randomized parameters
-            int[] arr_temp = Helpers.RandArray(length, lower_value_bound, upper_value_bound);
-            int[] arr_1 = arr_temp.clone(); //clone arrays so nothing interferes
-            int[] arr_2 = arr_temp.clone();
+            if (testarray == null) {
+                upper_value_bound = RandomGenerator.random(1, max);
+                lower_value_bound = RandomGenerator.random(0, upper_value_bound);
+
+                //generate random array using the randomized parameters
+                arr_temp = Helpers.RandArray(length, lower_value_bound, upper_value_bound);
+                arr_1 = arr_temp.clone(); //clone arrays so nothing interferes
+                arr_2 = arr_temp.clone();
+            } else {
+                arr_1 = testarray.clone();
+                arr_2 = arr_1.clone();
+                arr_temp = testarray;
+            }
 
             //executing bongobongo and measuring time
             startTime = System.nanoTime();
-            BongoBongo.sort(arr_1);
+            //BongoBongo.sort(arr_1);
+            KraemerSort.sortArray(arr_1);
             endTime = System.nanoTime();
             bongo_duration = endTime - startTime;
 
@@ -215,19 +286,14 @@ public class Tests {
     }
 
 
-
-
-
-
-
-    /*
-        Compares Speed of BongoBongo-Sort and Quicksort on the same Arrays.
-        Random array has: - length n: n = <n_base> * <n_factor>^(k) with k: 0 < k < <n_value_count>
-                          - is filled with random values x: 0 <= x < w,
-                          - with w in [1, n/8, n/4, n/2, n, 2n, 4n, 8n, 16n, n!, n², n³] (see value_bound-function)
-
-        Function returns the best, worst and average time for both sorting algorithms for every combination of w and n.
-        Per combination 100 arrays are created and sorted. value can be changed by adjusting the "cases_per_column variable"
+    /**
+     * Compares Speed of BongoBongo-Sort and Quicksort on the same Arrays.
+     * Random array has: - length n: n = <n_base> * <n_factor>^(k) with k: 0 < k < <n_value_count>
+     * - is filled with random values x: 0 <= x < w,
+     * - with w in [1, n/8, n/4, n/2, n, 2n, 4n, 8n, 16n, n!, n², n³] (see value_bound-function)
+     * <p>
+     * Function returns the best, worst and average time for both sorting algorithms for every combination of w and n.
+     * Per combination 100 arrays are created and sorted. value can be changed by adjusting the "cases_per_column variable"
      */
     public static void testSpeed(int n_value_count, int n_base, int n_factor) {
         int value_bound_count = 12;
@@ -366,7 +432,6 @@ public class Tests {
     }
 
 
-
     /*
         creates String of param result_table
         n_values -> used n-values
@@ -440,9 +505,8 @@ public class Tests {
     }
 
 
-
     //formats digit depending on the value and adds the fitting unit.
-    public static String formatDigit (long val) {
+    public static String formatDigit(long val) {
         double div = 1000;
         double buf;
         long x = val;
@@ -450,14 +514,14 @@ public class Tests {
         if (val < 1000) {
             return val + "ns";
         }
-        x/= 1000;
+        x /= 1000;
         if (x < 100) {
-            buf = val/div;
+            buf = val / div;
             return String.format("%.2f", buf) + "μs";
         }
-        x/=1000;
-        if (x<1000) {
-            buf = val/(div*div);
+        x /= 1000;
+        if (x < 1000) {
+            buf = val / (div * div);
             return String.format("%.3f", buf) + "ms";
         }
         return "";
