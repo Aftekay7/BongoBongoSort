@@ -24,8 +24,10 @@ public class Tests {
 
             startTime = System.nanoTime();
             //sort(arr_1);
-            KraemerSort.sortArray(arr_1);
+            //KraemerSort.sortArray(arr_1);
             //ScalingSort.sort(arr_1);
+            moreCompact.sort(arr_1);
+            //HeapSort.heapSort(arr_1);
             endTime = System.nanoTime();
             duration = endTime - startTime;
 
@@ -172,6 +174,8 @@ public class Tests {
             startTime = System.nanoTime();
             //BongoBongo.sort(arr_1);
             KraemerSort.sortArray(arr_1);
+            //moreCompact.sort(arr_1);
+            //HeapSort.heapSort(arr_1);
             endTime = System.nanoTime();
             bongo_duration = endTime - startTime;
 
@@ -266,20 +270,26 @@ public class Tests {
 
         //determine algorithm with lower average duration
         String winner;
-        long winner_time;
+        float winner_time;
+        float looser_time;
         if (bongo_avg_duration - quick_avg_duration > 0) {
             winner = "Quicksort";
-            winner_time = bongo_avg_duration - quick_avg_duration;
+            winner_time = quick_avg_duration;
+            looser_time = bongo_avg_duration;
         } else {
             winner = "Bongobongo";
-            winner_time = quick_avg_duration - bongo_avg_duration;
+            winner_time = bongo_avg_duration;
+            looser_time = quick_avg_duration;
         }
+
+
+        String faster = String.format("%.1f",looser_time/winner_time);
 
         System.out.println("Result: Bongobongo-Sort  " + bongo_win_count + " : " + quick_win_time + "  Quick-Sort, draws: " + draws);
         System.out.println("----------------------------------------------------------------------------------------------");
         System.out.println("Bongobongo took on average " + bongo_avg_duration + "ns, fastest sort took " + bongo_min_time + "ns, slowest was " + bongo_max_time + "ns. (~" + b_avg_rounded + "ms)");
         System.out.println("Quicksort took on average " + quick_avg_duration + "ns, fastest sort took " + quick_min_time + "ns, slowest was " + quick_max_time + "ns. (~" + q_avg_rounded + "ms)");
-        System.out.println("Therefore, " + winner + " was " + winner_time + "ns faster on average");
+        System.out.println("Therefore, " + winner + " was " + faster + " times faster.");
         System.out.println("----------------------------------------------------------------------------------------------");
         System.out.println("Bongobongo was on average " + bongo_avg_win_time + "ns faster in case of winning. Biggest win was by " + bongo_biggest_win + "ns. (~" + b_win_rounded + "ms)");
         System.out.println("Quicksort was on average  " + quick_avg_win_time + "ns faster in case of winning. Biggest win was by " + bongo_biggest_loss + "ns.(~" + q_win_rounded + "ms)");

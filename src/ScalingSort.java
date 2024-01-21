@@ -22,11 +22,9 @@ public class ScalingSort {
      */
     private static int[] buffer;
 
+    private static int[] indices;
 
-    /**
-     *
-     */
-    private static  int limit = 0;
+
 
     /**
      * initializes the sort algorithm
@@ -38,13 +36,11 @@ public class ScalingSort {
         array = input;
         buffer = new int[array.length];
 
-        limit = array.length/2;
-
         partialSort(0, array.length);
 
-       //System.out.println(scalingCount);
-    }
+       System.out.println(scalingCount);
 
+        }
     /**
      * sorts the (sub-)array between params
      * @param begin (inclusive) index of (sub-)array
@@ -100,7 +96,7 @@ public class ScalingSort {
             -> generic approach using the lengths of the sub-arrays for the exp. scale works too, but might take more steps than
             using just the linear scale.
          */
-        if ( max / n > min && n > 5){
+        if (n > 3){
             //value range is still very big -> another exponential partition might be beneficial
             int[] powers = new int[array.length];
 
@@ -112,7 +108,11 @@ public class ScalingSort {
                 factor *= base;
                 log++;
             }
-            exponentialPartition(log,begin,end,powers);
+            if (log >= n || (n == (end - begin) && log > 2)) {
+                exponentialPartition(log,begin,end,powers);
+            } else {
+                linearPartition(min, max, n, begin, end);
+            }
 
         } else {
 
@@ -172,7 +172,7 @@ public class ScalingSort {
      *              -> if value_count < value_range, this function is (only) surjective, but as soon as value_count >= value_range
      *              it becomes bijective -> values will be sorted after interpreting key-values as indices
      */
-    private static int linearScaler(int value, int min, int max, int n) {
+    public static int linearScaler(int value, int min, int max, int n) {
 
         long key;
         long scaler = max - min + 1;    //-> range of values
@@ -188,7 +188,7 @@ public class ScalingSort {
      * @param value   that has to be scaled
      * @return scaled value
      */
-    private static int exponentialScaler(int value, int[] powers) {
+    public static int exponentialScaler(int value, int[] powers) {
         int i = 0;
         while (powers[i] > 0 && value > powers[i]) {
             i++;
@@ -233,7 +233,7 @@ public class ScalingSort {
         }
 
         scalingCount++;
-        //Helpers.printArr(array);
+        Helpers.printArr(array);
 
 
         int beginIndex = begin;
@@ -288,7 +288,7 @@ public class ScalingSort {
         }
 
         scalingCount++;
-        //Helpers.printArr(array);
+        Helpers.printArr(array);
 
         int beginIndex = begin;
         int endIndex;

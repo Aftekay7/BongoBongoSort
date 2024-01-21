@@ -5,11 +5,8 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
-        int max = 1000000; //highest possible value in the array
-        int testcases = 100000; //count of arrays on which the algorithms are tested
-        int length = 250;
-        //Tests.compareSpeed(length, max, testcases);
-        //Tests.testSpeed(17,2,2);
+        int[] test = Helpers.RandArray(4000,0,1000);
+        Tests.compareSpeed(0,0,1000,test);
     }
 }
 
