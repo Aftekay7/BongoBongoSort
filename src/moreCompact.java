@@ -4,7 +4,7 @@ public class moreCompact {
     private static int[] array;
     private static int[] buffer;
     private static int[] indices;
-    private static int[] powers;
+    private static int[] powers;    //buffer for the powers, only there to safe some multiplications, not essential
 
 
     public static void sort(int[] input) {
@@ -12,13 +12,15 @@ public class moreCompact {
         buffer = new int[array.length];
         indices = new int[array.length];
         powers = new int[array.length];
-        //initialPartition();
+        initialPartition();
         partialSort(0,Integer.MAX_VALUE);
         //System.out.println(partitions);
     }
 
+    //scaledTo passes the biggest value that could have been placed into the current subarray
     private static int partialSort(int begin, int scaledTo) {
 
+        //last element or subarray contains only one element
        if (begin == array.length - 1 || array[begin+1] > scaledTo) {return begin + 1;};
 
         int min = array[begin];
@@ -41,7 +43,7 @@ public class moreCompact {
 
         int key;
         for (int i = begin; i < end; i++) {
-            key = ScalingSort.linearScaler(array[i], min, max, array.length);
+            key = linearScaler(array[i], min, max, array.length);
             indices[key]++;
         }
 
@@ -55,7 +57,7 @@ public class moreCompact {
 
         //categories the values
         for (int i = begin; i < end; i++) {
-            key = ScalingSort.linearScaler(array[i], min, max, array.length);
+            key = linearScaler(array[i], min, max, array.length);
             buffer[indices[key]++] = array[i];
         }
 
@@ -78,6 +80,7 @@ public class moreCompact {
         return end;
     }
 
+    //partitions the array according to the powers of n on initial call of the function if range of values >= n²
     private static void initialPartition () {
         int min = array[0];
         int max = min;
@@ -115,7 +118,7 @@ public class moreCompact {
 
             //partition the array
             for (int j : array) {
-                key = ScalingSort.exponentialScaler(j, powers);
+                key = exponentialScaler(j, powers);
                 buffer[indices[key]++] = j;
             }
 
@@ -140,6 +143,7 @@ public class moreCompact {
         }
     }
 
+    //calculates the log n (range of values) and caches the powers
     private static int calcPowers (int valueRange) {
         int factor = array.length;
         int base = array.length;
@@ -160,5 +164,25 @@ public class moreCompact {
         buf = buf + min;
 
         return buf + 1;
+    }
+
+    //same principle as the linearScaler, key = 0 ->  val < 1, key = 1 -> val < 2,...
+    public static int exponentialScaler(int value, int[] powers) {
+        int i = 0;
+        while (powers[i] > 0 && value > powers[i]) {
+            i++;
+        }
+        return i;
+    }
+
+    public static int linearScaler(int value, int min, int max, int n) {
+
+        long key;
+        long scaler = max - min + 1;    //-> range of values
+
+        key = (long) (n) * (long) (value - min);    //cast to long in case result of multiplication is > Integer.Max
+        key = key / scaler;
+
+        return (int) key;
     }
 }
