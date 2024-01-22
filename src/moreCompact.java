@@ -10,8 +10,12 @@ public class moreCompact {
     public static void sort(int[] input) {
         array = input;
         buffer = new int[array.length];
-        indices = new int[array.length];
-        powers = new int[array.length];
+        powers = new int[50];
+        if (array.length < powers.length) {
+            indices = new int[powers.length];
+        } else {
+            indices = new int[array.length];
+        }
         initialPartition();
         partialSort(0,Integer.MAX_VALUE);
         //System.out.println(partitions);
@@ -38,12 +42,18 @@ public class moreCompact {
             }
             end++;
         }
-
         if (max == min) { return end; }
+
+        if (end - begin == 2) {
+            array[begin] = min;
+            array[end - 1] = max;
+            return end;
+        }
+
 
         int key;
         for (int i = begin; i < end; i++) {
-            key = linearScaler(array[i], min, max, array.length);
+            key = linearScaler(array[i], min, max);
             indices[key]++;
         }
 
@@ -57,24 +67,24 @@ public class moreCompact {
 
         //categories the values
         for (int i = begin; i < end; i++) {
-            key = linearScaler(array[i], min, max, array.length);
+            key = linearScaler(array[i], min, max);
             buffer[indices[key]++] = array[i];
         }
 
         //store values back
         System.arraycopy(buffer, begin, array, begin, end - begin);
+        Helpers.printArr(array);
 
         //wipe indices array
         Arrays.fill(indices, 0);
 
 
-        //partitions++;
-        //Helpers.printArr(array);
-
         int beginIndex = begin;
         int i = 0;
         while (beginIndex < end) {
-            beginIndex = partialSort(beginIndex, calcMax(min, max, i+1) - 1); //key calcMax returns min of i + 1 -> min - 1 = max of i
+            key = getKey(array[beginIndex],min,max);
+            //calcMax returns min of bucket (i + 1) -> max of bucket i = min - 1
+            beginIndex = partialSort(beginIndex, calcMax(min, max, key + 1) - 1);
             i++;
         }
         return end;
@@ -129,13 +139,12 @@ public class moreCompact {
             Arrays.fill(indices, 0);
 
             //partitions++;
-            //Helpers.printArr(array);
+            Helpers.printArr(array);
 
             int beginIndex = 0;
-            int i = 0;
             while (beginIndex < array.length) {
-                beginIndex = partialSort(beginIndex,powers[i] - 1);
-                i++;
+                key = getKey(array[beginIndex], min, max);
+                beginIndex = partialSort(beginIndex,powers[key + 1] - 1);
             }
 
         } else {
@@ -157,13 +166,17 @@ public class moreCompact {
     }
 
     //calculates key -> the smallest value that was placed into the bucket
-    //-> i + 1 calculates the max + 1 value of the i-subarray
     private static int calcMax(int min, int max, int key) {
-        int buf = (max - min + 1) * key;
+        long buf = (long) ((max - min + 1)) * key;
         buf = buf / array.length;
         buf = buf + min;
 
-        return buf + 1;
+        return (int) buf;
+    }
+
+    //calculates the key that was used for the specified value
+    private static int getKey(int val, int min, int max) {
+        return (int) ( ( (long) ( (val - min) ) * array.length ) / (max - min + 1) );
     }
 
     //same principle as the linearScaler, key = 0 ->  val < 1, key = 1 -> val < 2,...
@@ -175,14 +188,7 @@ public class moreCompact {
         return i;
     }
 
-    public static int linearScaler(int value, int min, int max, int n) {
-
-        long key;
-        long scaler = max - min + 1;    //-> range of values
-
-        key = (long) (n) * (long) (value - min);    //cast to long in case result of multiplication is > Integer.Max
-        key = key / scaler;
-
-        return (int) key;
+    public static int linearScaler(int value, int min, int max) {
+        return (int) ( ( ( (long) (value - min) ) * array.length) / (max - min + 1) );   //cast to long in case result of multiplication is > Integer.Max
     }
 }

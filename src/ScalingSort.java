@@ -22,8 +22,6 @@ public class ScalingSort {
      */
     private static int[] buffer;
 
-    private static int[] indices;
-
 
 
     /**

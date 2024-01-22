@@ -173,8 +173,8 @@ public class Tests {
             //executing bongobongo and measuring time
             startTime = System.nanoTime();
             //BongoBongo.sort(arr_1);
-            KraemerSort.sortArray(arr_1);
-            //moreCompact.sort(arr_1);
+            //KraemerSort.sortArray(arr_1);
+            moreCompact.sort(arr_1);
             //HeapSort.heapSort(arr_1);
             endTime = System.nanoTime();
             bongo_duration = endTime - startTime;
