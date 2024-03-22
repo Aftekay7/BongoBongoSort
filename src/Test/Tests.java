@@ -1,3 +1,10 @@
+package Test;
+
+import BongoBongo.BongoBongo;
+import ImprovedVersions.moreCompact;
+import Util.Helpers;
+import Util.RandomGenerator;
+
 import java.util.Arrays;
 
 import static java.util.Arrays.sort;

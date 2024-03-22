@@ -1,3 +1,7 @@
+package ImprovedVersions;
+
+import Util.Helpers;
+
 /**
  * Optimized version of the one and only BongoBongoSort
  * Sorts Array by dividing Array into subarrays and ordering the keys by scaling them in relation to

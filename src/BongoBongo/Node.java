@@ -1,3 +1,5 @@
+package BongoBongo;
+
 /**
     - simple linked list/stack for the (unsorted) values, forms the value-list.
     - head (and tail) of this list is stored by a NodeMeta instance.

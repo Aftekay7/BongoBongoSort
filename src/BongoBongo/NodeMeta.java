@@ -1,3 +1,5 @@
+package BongoBongo;
+
 /**
     - elements of the container-array.
     - stores the head and tail of the value-list

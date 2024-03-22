@@ -1,3 +1,5 @@
+package Util;
+
 import java.util.Random;
 
 public class Helpers {
@@ -98,6 +100,7 @@ public class Helpers {
 
         for (int i = 0; i < length; i++) {
             int index = RandomGenerator.random(0, length);
+
             int buf = arr[i];
             arr[i] = arr[index];
             arr[index] = buf;

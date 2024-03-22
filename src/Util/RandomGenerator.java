@@ -1,3 +1,5 @@
+package Util;
+
 import java.util.Random;
 
 public class RandomGenerator {
